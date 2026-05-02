@@ -1,0 +1,63 @@
+{% if widget['data']['settings']['accordions'] is defined %}
+    {% set accordionBorder = '' %}
+    {% if widget['data']['settings']['accordion_settings']['border'] is defined and widget['data']['settings']['accordion_settings']['border'] == "true" %}
+        {% set accordionBorder = 'border' %}
+    {% endif %}
+    {% set accordionCardBorder = '' %}
+    {% if widget['data']['settings']['accordion_settings']['cardBorder'] is defined and widget['data']['settings']['accordion_settings']['cardBorder'] == "true" %}
+        {% set accordionCardBorder = 'border' %}
+    {% endif %}
+    {% set accordionCardPadding = '' %}
+    {% if widget['data']['settings']['accordion_settings']['cardPadding'] is defined %}
+        {% set accordionCardPadding = "padding:" ~ widget['data']['settings']['accordion_settings']['cardPadding'] ~ 'px !important' %}
+    {% endif %}
+    {% set accordionCardMargin = '' %}
+    {% if widget['data']['settings']['accordion_settings']['cardMargin'] is defined %}
+        {% set accordionCardMargin = "margin-bottom:" ~ widget['data']['settings']['accordion_settings']['cardMargin'] ~ 'px !important' %}
+    {% endif %}
+    {% set accordionCardContentPadding = '' %}
+    {% if widget['data']['settings']['accordion_settings']['cardContentPadding'] is defined %}
+        {% set accordionCardContentPadding = "padding:" ~ widget['data']['settings']['accordion_settings']['cardContentPadding'] ~ 'px !important' %}
+    {% endif %}
+    <div id="accordion" class="{{ accordionBorder }}">
+        {% if widget['data']['settings']['accordion_settings']['title'] is defined and widget['data']['settings']['accordion_settings']['title'] != "false" %}
+            <div class="row">
+                <div class="col">
+                    <legend>{{widget['data']['settings']['accordion_settings']['title']}}</legend>
+                </div>
+            </div>
+        {% endif %}
+        {% for key, accordion in widget['data']['settings']['accordions'] %}
+            {% set accordionTitle = 'Title Missing' %}
+            {% if accordion['title'] is defined %}
+                {% set accordionTitle = accordion['title'] %}
+            {% endif %}
+            {% set accordionContent = 'Content Missing' %}
+            {% if accordion['content'] is defined %}
+                {% set accordionContent = accordion['content'] %}
+            {% endif %}
+            <div class="card" style="box-shadow: none; {{accordionCardMargin}}">
+                {% set collapsed = 'collapsed' %}
+                {% if loop.first %}
+                    {% set collapsed = '' %}
+                {% endif %}
+                <div class="card-header {{accordionCardBorder}}" style="{{ accordionCardPadding }}">
+                    <h4 class="card-title w-100">
+                        <a class="d-block w-100 {{collapsed}} accordion-title" data-toggle="collapse" href="#collapse{{key}}" aria-expanded="false">
+                            <h4 class="mb-0">{{accordionTitle}}</h4>
+                        </a>
+                    </h4>
+                </div>
+                {% set show = '' %}
+                {% if loop.first %}
+                    {% set show = 'show' %}
+                {% endif %}
+                <div id="collapse{{key}}" class="collapse {{show}}" data-parent="#accordion">
+                    <div class="card-body" style="{{ accordionCardContentPadding }}">{{accordionContent}}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Please set accordion contents for this widget!</p>
+{% endif %}

@@ -1,0 +1,62 @@
+{% if widget['data']['settings']['slides'] is defined %}
+    {% set carouselBorder = '' %}
+    {% if widget['data']['settings']['carousel_settings']['border'] is defined and widget['data']['settings']['carousel_settings']['border'] == "true" %}
+        {% set carouselBorder = 'border' %}
+    {% endif %}
+    {% set carouselFade = '' %}
+    {% if widget['data']['settings']['carousel_settings']['fade'] is defined and widget['data']['settings']['carousel_settings']['fade'] == "true" %}
+        {% set carouselFade = 'carousel-fade' %}
+    {% endif %}
+    {% set carouselMinHeight = '100px' %}
+    {% if widget['data']['settings']['carousel_settings']['minHeight'] is defined %}
+        {% set carouselMinHeight = widget['data']['settings']['carousel_settings']['minHeight'] ~ 'px' %}
+    {% endif %}
+    {% set carouselIndicatorsColor = '#999' %}
+    {% if widget['data']['settings']['carousel_settings']['indicatorsColor'] is defined %}
+        {% set carouselIndicatorsColor = widget['data']['settings']['carousel_settings']['indicatorsColor'] %}
+    {% endif %}
+    {% set carouselPrevNextColor = '#999' %}
+    {% if widget['data']['settings']['carousel_settings']['prevNextColor'] is defined %}
+        {% set carouselPrevNextColor = widget['data']['settings']['carousel_settings']['prevNextColor'] %}
+    {% endif %}
+    <div id="carouselIndicators" class="carousel slide {{ carouselBorder }} {{ carouselFade }}" data-ride="carousel" style="min-height: {{ carouselMinHeight }};">
+        {% if widget['data']['settings']['carousel_settings']['showIndicators'] is defined and widget['data']['settings']['carousel_settings']['showIndicators'] == "true" %}
+            <ol class="carousel-indicators">
+                <li data-target="#carouselIndicators" data-slide-to="0" class="active" style="background-color: {{ carouselIndicatorsColor }}"></li>
+                <li data-target="#carouselIndicators" data-slide-to="1" class="" style="background-color: {{ carouselIndicatorsColor }}"></li>
+                <li data-target="#carouselIndicators" data-slide-to="2" class="" style="background-color: {{ carouselIndicatorsColor }}"></li>
+            </ol>
+        {% endif %}
+        <div class="carousel-inner">
+            {% for slide in widget['data']['settings']['slides'] %}
+                {% set slideContent = 'Content Missing' %}
+                {% if slide['content'] is defined %}
+                    {% set slideContent = slide['content'] %}
+                {% endif %}
+                {% set active = '' %}
+                {% if loop.first %}
+                    {% set active = 'active' %}
+                {% endif %}
+                <div class="carousel-item {{active}}">
+                    {{ slideContent }}
+                </div>
+            {% endfor %}
+        </div>
+        {% if widget['data']['settings']['carousel_settings']['showPrevNext'] is defined and widget['data']['settings']['carousel_settings']['showPrevNext'] == "true" %}
+            <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-custom-icon" aria-hidden="true" style="color: {{ carouselPrevNextColor }};">
+                    <i class="fa fa-fw fa-chevron-left"></i>
+                </span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+                <span class="carousel-control-custom-icon" aria-hidden="true" style="color: {{ carouselPrevNextColor }};">
+                    <i class="fa fa-fw fa-chevron-right"></i>
+                </span>
+                <span class="sr-only">Next</span>
+            </a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>Please set slides for this widget!</p>
+{% endif %}

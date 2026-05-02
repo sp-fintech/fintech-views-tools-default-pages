@@ -1,0 +1,113 @@
+<!-- htmlmin:ignore -->
+{% set widgetAccordions = [] %}
+{% if pagewidget['settings']['accordions'] is defined %}
+    {% set widgetAccordions = pagewidget['settings']['accordions'] %}
+{% elseif widget['settings']['accordions'] is defined %}
+    {% set widgetAccordions = widget['settings']['accordions'] %}
+{% endif %}
+{% if is_array(widgetAccordions) %}
+    {% set widgetAccordions = json_encode(widgetAccordions, 16) %}
+{% endif %}
+{% set accordionSettings = [] %}
+{% if pagewidget['settings']['accordion_settings'] is defined %}
+    {% set accordionSettings = pagewidget['settings']['accordion_settings'] %}
+{% elseif widget['settings']['accordion_settings'] is defined %}
+    {% set accordionSettings = widget['settings']['accordion_settings'] %}
+{% endif %}
+{% if is_array(accordionSettings) %}
+    {% set accordionSettings = json_encode(accordionSettings, 16) %}
+{% endif %}
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'accordions',
+                'fieldLabel'                     : 'Widget Accordions',
+                'fieldType'                      : 'textarea',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Json formatted accordions.',
+                'fieldRequired'                  : true,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldTextareaRows'              : 8,
+                'fieldDataInputMaxLength'        : 65535,
+                'fieldValue'                     : widgetAccordions
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'accordion_settings',
+                'fieldLabel'                     : 'Widget Settings',
+                'fieldType'                      : 'textarea',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Json formatted settings.',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldTextareaRows'              : 8,
+                'fieldDataInputMaxLength'        : 65535,
+                'fieldValue'                     : accordionSettings
+            ]
+        )}}
+    </div>
+</div>
+<!-- htmlmin:ignore -->
+<script>
+/* globals paginatedPNotify BazHelpers BazContentFields */
+var dataCollectionComponent, dataCollectionSection;
+
+if (!window['dataCollection']['{{componentId}}']) {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'] = { };
+} else {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'];
+}
+if (!dataCollectionComponent['{{componentId}}-{{sectionId}}']) {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'] = { };
+} else {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'];
+}
+
+dataCollectionSection['{{componentId}}-{{sectionId}}-accordions'] = { };
+dataCollectionSection['{{componentId}}-{{sectionId}}-accordion_settings'] = { };
+
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form'] = { };
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules'] = { };
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages'] = { };
+}
+
+dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules']['{{componentId}}-{{sectionId}}-accordions'] = 'required';
+dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages']['{{componentId}}-{{sectionId}}-accordions'] = 'Please enter accordions information';
+
+$(document).ready(function() {
+    var widgetAccordions = JSON.parse('{{widgetAccordions}}');
+    var accordionSettings = JSON.parse('{{accordionSettings}}');
+
+    (function prettyfyJson() {
+        $('#{{componentId}}-{{sectionId}}-accordions').val(JSON.stringify(widgetAccordions, null, 4));
+        $('#{{componentId}}-{{sectionId}}-accordion_settings').val(JSON.stringify(accordionSettings, null, 4));
+    })();
+});
+</script>

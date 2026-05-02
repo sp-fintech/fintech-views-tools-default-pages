@@ -1,0 +1,113 @@
+<!-- htmlmin:ignore -->
+{% set widgetSlides = [] %}
+{% if pagewidget['settings']['slides'] is defined %}
+    {% set widgetSlides = pagewidget['settings']['slides'] %}
+{% elseif widget['settings']['slides'] is defined %}
+    {% set widgetSlides = widget['settings']['slides'] %}
+{% endif %}
+{% if is_array(widgetSlides) %}
+    {% set widgetSlides = json_encode(widgetSlides, 16) %}
+{% endif %}
+{% set carouselSettings = [] %}
+{% if pagewidget['settings']['carousel_settings'] is defined %}
+    {% set carouselSettings = pagewidget['settings']['carousel_settings'] %}
+{% elseif widget['settings']['carousel_settings'] is defined %}
+    {% set carouselSettings = widget['settings']['carousel_settings'] %}
+{% endif %}
+{% if is_array(carouselSettings) %}
+    {% set carouselSettings = json_encode(carouselSettings, 16) %}
+{% endif %}
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'slides',
+                'fieldLabel'                     : 'Widget Slides',
+                'fieldType'                      : 'textarea',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Json formatted slides.',
+                'fieldRequired'                  : true,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldTextareaRows'              : 8,
+                'fieldDataInputMaxLength'        : 65535,
+                'fieldValue'                     : widgetSlides
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'carousel_settings',
+                'fieldLabel'                     : 'Widget Settings',
+                'fieldType'                      : 'textarea',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Json formatted settings.',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldTextareaRows'              : 8,
+                'fieldDataInputMaxLength'        : 65535,
+                'fieldValue'                     : carouselSettings
+            ]
+        )}}
+    </div>
+</div>
+<!-- htmlmin:ignore -->
+<script>
+/* globals paginatedPNotify BazHelpers BazContentFields */
+var dataCollectionComponent, dataCollectionSection;
+
+if (!window['dataCollection']['{{componentId}}']) {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'] = { };
+} else {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'];
+}
+if (!dataCollectionComponent['{{componentId}}-{{sectionId}}']) {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'] = { };
+} else {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'];
+}
+
+dataCollectionSection['{{componentId}}-{{sectionId}}-slides'] = { };
+dataCollectionSection['{{componentId}}-{{sectionId}}-carousel_settings'] = { };
+
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form'] = { };
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules'] = { };
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages']) {
+    dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages'] = { };
+}
+
+dataCollectionSection['{{componentId}}-{{sectionId}}-form']['rules']['{{componentId}}-{{sectionId}}-slides'] = 'required';
+dataCollectionSection['{{componentId}}-{{sectionId}}-form']['messages']['{{componentId}}-{{sectionId}}-slides'] = 'Please enter slides information';
+
+$(document).ready(function() {
+    var widgetSlides = JSON.parse('{{widgetSlides}}');
+    var carouselSettings = JSON.parse('{{carouselSettings}}');
+
+    (function prettyfyJson() {
+        $('#{{componentId}}-{{sectionId}}-slides').val(JSON.stringify(widgetSlides, null, 4));
+        $('#{{componentId}}-{{sectionId}}-carousel_settings').val(JSON.stringify(carouselSettings, null, 4));
+    })();
+});
+</script>
